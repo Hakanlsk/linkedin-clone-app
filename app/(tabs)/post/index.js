@@ -7,12 +7,47 @@ import {
   StatusBar,
   Pressable,
   TextInput,
+  TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
-import { Entypo } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
+import { decode } from "base-64";
+global.atob = decode;
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 
 const index = () => {
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.userId;
+      setUserId(userId);
+    };
+
+    fetchUser();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <ScrollView style={styles.section}>
       <View style={styles.container}>
@@ -45,7 +80,16 @@ const index = () => {
         placeholderTextColor={"black"}
         multiline={true}
         numberOfLines={10}
+        textAlignVertical={"top"}
       />
+
+      <TouchableOpacity style={styles.mediaButtonContainer}>
+        <TouchableOpacity onPress={pickImage} style={styles.mediaButton}>
+          <MaterialIcons name="perm-media" size={24} color="black" />
+        </TouchableOpacity>
+
+        <Text>Media</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -101,5 +145,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "500",
     marginTop: 10,
+  },
+  mediaButtonContainer: {
+    flexDirection: "column",
+    marginRight: "auto",
+    marginLeft: "auto",
+  },
+  mediaButton: {
+    width: 40,
+    height: 40,
+    marginTop: 15,
+    backgroundColor: "#E0E0E0",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
