@@ -7,6 +7,7 @@ import {
   TextInput,
   Image,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
@@ -14,6 +15,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import axios from "axios";
+import localhost from "../../localhost";
 
 const register = () => {
   const [email, setEmail] = useState("");
@@ -22,7 +25,36 @@ const register = () => {
   const [image, setImage] = useState("");
   const router = useRouter();
 
-  const handleRegister = () => {};
+  const handleRegister = () => {
+    console.log("hello");
+    const user = {
+      name: name,
+      email: email,
+      password: password,
+      profileImage: image,
+    };
+
+    axios
+      .post(`http://192.168.130.184:8000/register`, user)
+      .then((response) => {
+        console.log(response);
+        Alert.alert(
+          "Registration successful",
+          "You have been registered successfully"
+        );
+        setName("");
+        setEmail("");
+        setPassword("");
+        setImage("");
+      })
+      .catch((error) => {
+        Alert.alert(
+          "Registration failed",
+          "An error occurred while registering"
+        );
+        console.log("registration failed", error);
+      });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -98,7 +130,6 @@ const register = () => {
             <TextInput
               value={image}
               onChangeText={(text) => setImage(text)}
-              secureTextEntry={true}
               style={styles.input}
               placeholder="enter your Image url"
             />

@@ -8,15 +8,46 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import localhost from "../../localhost";
 
 const login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  //kullanıcı daha once giris yaptiysa asyncstorage sayesinde direkt home yonlendirmesi yapilir
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token) {
+          router.replace("/(tabs)/home");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+  const handleLogin = () => {
+    const user = {
+      email: email,
+      password: password,
+    };
+
+    axios.post(`http://192.168.130.184:8000/login`, user).then((response) => {
+      console.log(response);
+      const token = response.data.token;
+      AsyncStorage.setItem("authToken", token);
+      router.replace("/(tabs)/home");
+    });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -76,7 +107,7 @@ const login = () => {
 
           <View style={{ marginTop: 80 }} />
 
-          <TouchableOpacity style={styles.loginButton}>
+          <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
             <Text style={styles.loginText}>Login</Text>
           </TouchableOpacity>
 
