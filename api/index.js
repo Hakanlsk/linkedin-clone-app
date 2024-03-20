@@ -289,7 +289,7 @@ app.get("/connections/:userId", async (req, res) => {
 //endpoint to create post
 app.post("/create", async (req, res) => {
   try {
-    const { description, imageUrl, userId } = req;
+    const { description, imageUrl, userId } = req.body;
 
     const newPost = new Post({
       description: description,
@@ -317,5 +317,49 @@ app.get("/all", async (req, res) => {
   } catch (error) {
     console.log("error fetching all the posts", error);
     res.status(500).json({ message: "Error fetching all the posts" });
+  }
+});
+
+app.post("/like/:postId/:userId", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.params.userId;
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(400).json({ message: "Post Not Found" });
+    }
+
+    //kullanıncın postu zaten begendigi durum
+    const existingLike = post?.likes.find(
+      (like) => like.user.toString() === userId
+    );
+
+    //kullanıcı zaten begenmisse begeniyi kaldirmak icin filter kullandik
+    if (existingLike) {
+      post.likes = post.likes.filter((like) => like.user.toString() !== userId);
+    } else {
+      post.likes.push({ user: userId });
+    }
+
+    await post.save();
+    res.status(200).json({ message: "Post like/unlike successfull", post });
+  } catch (error) {
+    console.log("error likeing a post", error);
+    res.status(500).json({ message: "Error liking the post" });
+  }
+});
+
+app.put("/profile/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { userDescription } = req.body;
+
+    await User.findByIdAndUpdate(userId, { userDescription });
+
+    res.status(200).json({ message: "User profile updated successfully" });
+  } catch (error) {
+    console.log("Error updating user Profile", error);
+    res.status(500).json({ message: "Error updating user profile" });
   }
 });

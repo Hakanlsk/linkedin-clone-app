@@ -17,11 +17,16 @@ import { decode } from "base-64";
 global.atob = decode;
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
+import { firebase } from "../../../firebase";
+import axios from "axios";
+import { useRouter } from "expo-router";
 
 const index = () => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
   const [userId, setUserId] = useState("");
+  const [user, setUser] = useState();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -33,6 +38,23 @@ const index = () => {
 
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserProfile();
+    }
+  }, [userId]);
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.130.184:8000/profile/${userId}`
+      );
+      const userData = response.data.user;
+      setUser(userData);
+    } catch (error) {
+      console.log("error fetching user profile", error);
+    }
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -48,27 +70,83 @@ const index = () => {
     }
   };
 
+  const createPost = async () => {
+    try {
+      const uploadedUrl = await uploadFile();
+
+      const postData = {
+        description: description,
+        imageUrl: uploadedUrl,
+        userId: userId,
+      };
+
+      const response = await axios.post(
+        "http://192.168.130.184:8000/create",
+        postData
+      );
+      console.log("post created ", response.data);
+      if (response.status === 201) {
+        router.replace("/(tabs)/home");
+      }
+    } catch (error) {
+      console.log("error creating post", error);
+    }
+  };
+
+  //image'i uri dan firebase storage e yukleyen fonksiyon
+  const uploadFile = async () => {
+    try {
+      console.log("Image URI:", image);
+      //fileSytem paketi sayesinde image in cihazdaki uri i alinir
+      const { uri } = await FileSystem.getInfoAsync(image);
+
+      if (!uri) {
+        throw new Error("Invalid file URI");
+      }
+
+      const blob = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+          resolve(xhr.response);
+        };
+        xhr.onerror = (e) => {
+          reject(new TypeError("Network request failed"));
+        };
+        xhr.responseType = "blob";
+        xhr.open("GET", uri, true);
+        xhr.send(null);
+      });
+      //uridan dosya adi ayiklanir
+      const filename = image.substring(image.lastIndexOf("/") + 1);
+      //firebase storage de ref olusturma
+      const ref = firebase.storage().ref().child(filename);
+      await ref.put(blob);
+      //yuklenen dosyanın indirme url si alinir
+      const downloadURL = await ref.getDownloadURL();
+      console.log("FIREBASE URL : ", downloadURL);
+      return downloadURL;
+      // Alert.alert("Photo uploaded");
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
   return (
     <ScrollView style={styles.section}>
       <View style={styles.container}>
         <View style={styles.subContainer}>
           <Entypo name="circle-with-cross" size={24} color="black" />
           <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={{
-                uri: "https://www.shutterstock.com/image-illustration/3d-render-attractive-cartoon-character-260nw-1933348058.jpg",
-              }}
-            />
-            <Text style={{ fontWeight: "500" }}>Anyone</Text>
+            <Image style={styles.image} source={{ uri: user?.profileImage }} />
+            <Text style={{ fontWeight: "500" }}>{user?.name}</Text>
           </View>
         </View>
 
         <View style={styles.postButtonContainer}>
           <Entypo name="back-in-time" size={24} color="black" />
-          <Pressable style={styles.postButton}>
+          <TouchableOpacity onPress={createPost} style={styles.postButton}>
             <Text style={styles.postButtonText}>Post</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -79,9 +157,13 @@ const index = () => {
         placeholder="What do you want to talk about"
         placeholderTextColor={"black"}
         multiline={true}
-        numberOfLines={10}
+        numberOfLines={3}
         textAlignVertical={"top"}
       />
+
+      <View>
+        {image && <Image source={{ uri: image }} style={styles.postImage} />}
+      </View>
 
       <TouchableOpacity style={styles.mediaButtonContainer}>
         <TouchableOpacity onPress={pickImage} style={styles.mediaButton}>
@@ -159,5 +241,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+  },
+  postImage: {
+    width: "100%",
+    height: 240,
+    marginVertical: 20,
   },
 });

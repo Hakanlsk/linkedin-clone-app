@@ -52,7 +52,6 @@ const index = () => {
       console.log("error fetching user profile", error);
     }
   };
-
   useEffect(() => {
     if (userId) {
       fetchUsers();
@@ -73,7 +72,6 @@ const index = () => {
       fetchFriendRequests();
     }
   }, [userId]);
-
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
@@ -90,7 +88,7 @@ const index = () => {
         setConnectionRequests(connectionRequestsData);
       }
     } catch (error) {
-      console.log(error);
+      console.log("error", error);
     }
   };
   console.log(connectionRequests);
@@ -137,7 +135,6 @@ const index = () => {
           <Text style={styles.premiumText}>Try Premium</Text>
         </View>
       </View>
-
       <FlatList
         data={users}
         columnWrapperStyle={{ justifyContent: "space-between" }}

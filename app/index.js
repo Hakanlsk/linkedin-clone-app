@@ -3,8 +3,8 @@ import React from "react";
 import { Redirect } from "expo-router";
 
 const index = () => {
-  // return <Redirect href="/(authenticate)/login" />;
-  return <Redirect href="/(tabs)/post" />;
+  return <Redirect href="/(authenticate)/login" />;
+  // return <Redirect href="/(tabs)/post" />;
 };
 
 export default index;
