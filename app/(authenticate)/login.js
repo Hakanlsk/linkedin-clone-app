@@ -41,7 +41,7 @@ const login = () => {
       password: password,
     };
 
-    axios.post(`http://192.168.130.184:8000/login`, user).then((response) => {
+    axios.post(`http://localhost:8000/login`, user).then((response) => {
       console.log(response);
       const token = response.data.token;
       AsyncStorage.setItem("authToken", token);
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     color: "#041E42",
   },
   formContainer: {
-    marginTop: 70,
+    marginTop: 50,
   },
   inputContainer: {
     flexDirection: "row",

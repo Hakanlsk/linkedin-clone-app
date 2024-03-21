@@ -44,7 +44,7 @@ const index = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.130.184:8000/profile/${userId}`
+        `http://localhost:8000/profile/${userId}`
       );
       const userData = response.data.user;
       setUser(userData);
@@ -59,7 +59,7 @@ const index = () => {
   }, [userId]);
   const fetchUsers = async () => {
     axios
-      .get(`http://192.168.130.184:8000/users/${userId}`)
+      .get(`http://192.168.252.184:8000/users/${userId}`)
       .then((response) => {
         setUsers(response.data);
       })
@@ -75,7 +75,7 @@ const index = () => {
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.130.184:8000/connection-request/${userId}`
+        `http://localhost:8000/connection-request/${userId}`
       );
       if (response.status === 200) {
         const connectionRequestsData = response.data?.map((friendRequest) => ({

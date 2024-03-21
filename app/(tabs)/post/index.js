@@ -47,7 +47,7 @@ const index = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.130.184:8000/profile/${userId}`
+        `http://localhost:8000/profile/${userId}`
       );
       const userData = response.data.user;
       setUser(userData);
@@ -81,12 +81,12 @@ const index = () => {
       };
 
       const response = await axios.post(
-        "http://192.168.130.184:8000/create",
+        "http://192.168.252.184:8000/create",
         postData
       );
       console.log("post created ", response.data);
       if (response.status === 201) {
-        router.replace("/(tabs)/home");
+        router.navigate("/(tabs)/home");
       }
     } catch (error) {
       console.log("error creating post", error);

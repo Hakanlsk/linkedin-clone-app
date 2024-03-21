@@ -35,7 +35,7 @@ const register = () => {
     };
 
     axios
-      .post(`http://192.168.130.184:8000/register`, user)
+      .post(`http://localhost:8000/register`, user)
       .then((response) => {
         console.log(response);
         Alert.alert(

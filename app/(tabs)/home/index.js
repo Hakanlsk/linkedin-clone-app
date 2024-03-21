@@ -50,7 +50,7 @@ const index = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.130.184:8000/profile/${userId}`
+        `http://localhost:8000/profile/${userId}`
       );
       const userData = response.data.user;
       setUser(userData);
@@ -62,14 +62,14 @@ const index = () => {
   useEffect(() => {
     const fetchAllPosts = async () => {
       try {
-        const response = await axios.get("http://192.168.130.184:8000/all");
+        const response = await axios.get("http://localhost:8000/all");
         setPosts(response.data.posts);
       } catch (error) {
         console.log("error fetching posts", error);
       }
     };
     fetchAllPosts();
-  }, []);
+  }, [posts]);
 
   const MAX_LINES = 2;
   const [showFullText, setShowFullText] = useState(false);
@@ -82,7 +82,7 @@ const index = () => {
   const handleLikePost = async (postId) => {
     try {
       const response = await axios.post(
-        `http://192.168.130.184:8000/like/${postId}/${userId}`
+        `http://localhost:8000/like/${postId}/${userId}`
       );
       if (response.status === 200) {
         const updatedPost = response.data.post;
@@ -156,7 +156,7 @@ const index = () => {
               </Text>
               {!showFullText && (
                 <Pressable onPress={toggleShowFullText}>
-                  <Text style={{ color: "red" }}>See More </Text>
+                  <Text style={{ color: "#0072b1" }}>See More </Text>
                 </Pressable>
               )}
             </View>
@@ -193,7 +193,7 @@ const index = () => {
                   style={styles.reactionIcon}
                   name="like2"
                   size={isLiked ? 23 : 22}
-                  color={isLiked ? "#0072b1" : "gray"}
+                  color={"gray"}
                 />
                 <Text style={styles.reactionText}>Like</Text>
               </TouchableOpacity>
@@ -202,27 +202,27 @@ const index = () => {
                   style={styles.reactionIcon}
                   name="comment-o"
                   size={22}
-                  color="black"
+                  color="gray"
                 />
-                <Text style={styles.reactionText}>Like</Text>
+                <Text style={styles.reactionText}>Comment</Text>
               </TouchableOpacity>
               <TouchableOpacity>
                 <Ionicons
                   style={styles.reactionIcon}
                   name="share-outline"
                   size={22}
-                  color="black"
+                  color="gray"
                 />
-                <Text style={styles.reactionText}>Like</Text>
+                <Text style={styles.reactionText}>Share</Text>
               </TouchableOpacity>
               <TouchableOpacity>
                 <Feather
                   style={styles.reactionIcon}
                   name="send"
                   size={22}
-                  color="black"
+                  color="gray"
                 />
-                <Text style={styles.reactionText}>Like</Text>
+                <Text style={styles.reactionText}>Send</Text>
               </TouchableOpacity>
             </View>
           </View>

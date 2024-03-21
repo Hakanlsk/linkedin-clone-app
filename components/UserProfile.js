@@ -13,16 +13,13 @@ const UserProfile = ({ item, userId }) => {
   const [connectionSent, setConnectionSent] = useState(false);
   const sendConnectionRequest = async (currentUserId, selectedUserId) => {
     try {
-      const response = await fetch(
-        `http://192.168.130.184:8000/connection-request`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ currentUserId, selectedUserId }),
-        }
-      );
+      const response = await fetch(`http://localhost:8000/connection-request`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ currentUserId, selectedUserId }),
+      });
 
       if (response.ok) {
         setConnectionSent(true);

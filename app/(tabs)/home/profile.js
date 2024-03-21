@@ -46,7 +46,7 @@ const profile = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.130.184:8000/profile/${userId}`
+        `http://localhost:8000/profile/${userId}`
       );
       const userData = response.data.user;
       setUser(userData);
@@ -58,7 +58,7 @@ const profile = () => {
   const handleSaveDescription = async () => {
     try {
       const response = await axios.put(
-        `http://192.168.130.184:8000/profile/${userId}`,
+        `http://localhost:8000/profile/${userId}`,
         {
           userDescription,
         }
@@ -138,8 +138,26 @@ const profile = () => {
 
       <View style={{ marginTop: 80, marginHorizontal: 10 }}>
         <Text style={{ fontSize: 17, fontWeight: "bold" }}>{user?.name}</Text>
-        <Pressable onPress={() => setIsEditing(!isEditing)}>
-          <Text>{user?.userDescription ? "Edit" : "Add Bio"}</Text>
+        <Pressable
+          style={{
+            backgroundColor: "green",
+            width: 60,
+            marginTop: 20,
+            marginBottom: 10,
+            padding: 5,
+            borderRadius: 10,
+          }}
+          onPress={() => setIsEditing(!isEditing)}
+        >
+          <Text
+            style={{
+              textAlign: "center",
+              fontWeight: "500",
+              color: "white",
+            }}
+          >
+            {user?.userDescription ? "Edit" : "Add Bio"}
+          </Text>
         </Pressable>
 
         <View>

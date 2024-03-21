@@ -28,7 +28,7 @@ const connections = () => {
   const fetchConnections = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.130.184:8000/connections/${userId}`
+        `http://localhost:8000/connections/${userId}`
       );
       setConnections(response.data.connections);
     } catch (error) {
