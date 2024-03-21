@@ -89,7 +89,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     from: "linkedin@gmail.com",
     to: email,
     subject: "Email Verification",
-    text: `Please click the following link verify your email: http://192.168.130.184:8000/verify/${verificationToken}`,
+    text: `Please click the following link verify your email: http://localhost:8000/verify/${verificationToken}`,
   };
 
   //send the mail
