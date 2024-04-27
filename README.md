@@ -26,5 +26,5 @@ Expo (Expo Router, Expo Image Picker)
 
 
 <div align="center">
-  <img src="https://github.com/Hakanlsk/linkedin-clone/assets/123507532/ff480b03-00e3-4f84-adf9-f8239f018e99" alt="LinkedIn Clone GIF" width="300" height="600" />
+  <img src="https://github.com/Hakanlsk/linkedin-clone/assets/123507532/ff480b03-00e3-4f84-adf9-f8239f018e99" alt="LinkedIn Clone GIF" width="300" height="600" style="margin-top: 20px;" />
 </div>
