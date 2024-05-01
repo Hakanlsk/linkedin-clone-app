@@ -1,6 +1,6 @@
 # 🔗 LinkedIn Clone - React Native with Firebase
 
-## 🔑 Project Features
+## 🔑 Project Features 
 Here are the key features of the LinkedIn clone application:
 
 - **User Authentication**: Secure sign-up and login functionality using the MERN stack, providing users with a reliable authentication experience.
